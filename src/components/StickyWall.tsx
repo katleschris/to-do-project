@@ -5,23 +5,35 @@ import AddIcon from '@mui/icons-material/Add';
 interface noteProps{
     title : string,
     details : string,
-    index : number
+    index : number,
+    color : string,
 }
-const notesArr: any[] = []
+const colors :any = {
+   1 : "#fff9b1",
+   2 : "#f5f6f8",
+   3 : "#f5d128",
+   4 : "#d0e17a",
+   5 : "#d5f692",
+   6 : "#a6ccf5",
+   7 : "#67c6c0",
+   8 : "#ff9d48",
+   9 : "#b384bb",
+}
 export const StickyWall = ()=>{
   const [notesTsx, setNotesTsx] = useState<any>([])
  
   function StickyNote(props:noteProps){
-  const {title, details, index} = props
+  const {title, details, index, color} = props
   const [newTitle, setNewTitle] = useState<any>("")
   const [newDetails, setNewDetails] = useState<any>("")
-  const [confirmTitle, setConfirmTitle] = useState<Boolean>(false) // Will use this as a button later to confirm changes
-  const [confirmDetails, setConfirmDetails] = useState<Boolean>(false) // Will use this as a button later to confirm changes
+ // const [confirmTitle, setConfirmTitle] = useState<Boolean>(false) // Will use this as a button later to confirm changes
+ // const [confirmDetails, setConfirmDetails] = useState<Boolean>(false) // Will use this as a button later to confirm changes
 
   const note ={
       title,
       details,
       index,
+      color,
   }
 
   function handleChangeTitle(e:any){ //Will change the type later
@@ -33,7 +45,7 @@ export const StickyWall = ()=>{
 
 
    return (
-     <div className="note" style={{width:"250px", height:"250px", backgroundColor:"red"}}>
+     <div className="note" style={{width:"250px", height:"250px", backgroundColor: color}}>
       <div className="note-title"> 
           <textarea cols={24} maxLength={55} name="Title" value={newTitle} onChange={handleChangeTitle} placeholder="Title">
          </textarea>
@@ -51,9 +63,9 @@ export const StickyWall = ()=>{
     const newNote:noteProps = {
        title : "",
        details : "",
-       index : notesArr.length
+       index : notesTsx.length,
+       color : colors[Math.floor(Math.random() *10)]
     }
-    
     setNotesTsx([...notesTsx, newNote]);
    }
 
@@ -67,13 +79,16 @@ export const StickyWall = ()=>{
         )
     }
 
+
+  //Couldn't really see how the component looked as npm run dev doesn't seem to be working but just creating 
+  // a scaffold for now
     return(
         <>
         <div style={{backgroundColor:"white", width:"75vw", height:"100vh", marginLeft:"auto"}}>
             <h2 style={{marginLeft:"26px"}}>Sticky Wall</h2>
           <div style={{ width:"92.5%", height:"82%", margin:"0 auto", border:"solid 1px gray", display:"flex", flexWrap:"wrap", 
           gap: "25px", overflow:"auto", overflowX:"hidden",
-          padding:"10px"}}>
+          padding:"10px", paddingLeft:"40px"}}>
            {notesTsx.map((note:noteProps)=>{
       return(
         <StickyNote key={note.index} {...note}/>
@@ -87,4 +102,3 @@ export const StickyWall = ()=>{
     )
 
 }
-
