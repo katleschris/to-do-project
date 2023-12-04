@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect} from "react";
 import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from "@mui/material";
 
 //All this is still proof of concept, but just getting a basic idea going 
 interface noteProps{
@@ -24,23 +27,46 @@ export const StickyWall = ()=>{
  
   function StickyNote(props:noteProps){
   const {title, details, index, color} = props
+  const [confirm, setConfirm] = useState<Boolean>(false)
   const [newTitle, setNewTitle] = useState<any>("")
   const [newDetails, setNewDetails] = useState<any>("")
  // const [confirmTitle, setConfirmTitle] = useState<Boolean>(false) // Will use this as a button later to confirm changes
  // const [confirmDetails, setConfirmDetails] = useState<Boolean>(false) // Will use this as a button later to confirm changes
 
-  const note ={
-      title,
-      details,
-      index,
-      color,
-  }
+ useEffect(()=>{
+  setNewDetails(details)
+  setNewTitle(title)
+ },[])
 
   function handleChangeTitle(e:any){ //Will change the type later
      setNewTitle(e.target.value)
+     setConfirm(true)
   }
   function handleChangeDetails(e:any){ //Will change the type later
      setNewDetails(e.target.value)
+     setConfirm(true)
+  }
+
+  function cancelUpdate(){
+    setNewTitle(notesTsx[index].title)
+    setNewDetails(notesTsx[index].details)
+    setConfirm(false)
+  }
+
+  function pushUpdate(){
+    const note ={
+      title : newTitle,
+      details : newDetails,
+      index,
+      color,
+  }
+  setNotesTsx(() => {
+    const newNotes = [...notesTsx];
+    newNotes[index] = {...note};
+    return newNotes;
+  });
+
+    setConfirm(false)
   }
 
 
@@ -51,16 +77,26 @@ export const StickyWall = ()=>{
          </textarea>
          </div>
          <div className="note-details"> 
-          <textarea rows={10} cols={28} maxLength={33*10} name="Details" value={newDetails} onChange={handleChangeDetails} placeholder="Details">
+          <textarea rows={8} cols={28} maxLength={33*8} name="Details" value={newDetails} onChange={handleChangeDetails} placeholder="Details">
          </textarea>
          </div>
+      { confirm && <div style={{ width:"100px", margin: "0 auto"}}> 
+      <div className="confirm-buttons" style={{display:"flex", justifyContent:"space-around"}}>
+      <IconButton color="error" onClick={cancelUpdate}>
+      <CloseIcon fontSize="small" color="error"/>
+       </IconButton>
+       <IconButton color="success" onClick={pushUpdate}>
+        <CheckIcon fontSize="small" color="success" />
+       </IconButton>
+      </div>
+      </div>}
      </div>
    )
  }
   
 
    function handleClick(){
-    const newNote:noteProps = {
+    const newNote: noteProps = {
        title : "",
        details : "",
        index : notesTsx.length,
@@ -88,11 +124,14 @@ export const StickyWall = ()=>{
             <h2 style={{marginLeft:"26px"}}>Sticky Wall</h2>
           <div style={{ width:"92.5%", height:"82%", margin:"0 auto", border:"solid 1px gray", display:"flex", flexWrap:"wrap", 
           gap: "25px", overflow:"auto", overflowX:"hidden",
-          padding:"10px", paddingLeft:"40px"}}>
+          paddingTop:"30px", paddingLeft:"60px", paddingBottom:"30px"}}>
            {notesTsx.map((note:noteProps)=>{
       return(
-        <StickyNote key={note.index} {...note}/>
-        
+        <StickyNote key={note.index} title={note.title}    
+        details={note.details}
+        index={note.index}
+        color={note.color}
+        />
       )
     })}
            <Card />
@@ -102,3 +141,4 @@ export const StickyWall = ()=>{
     )
 
 }
+
