@@ -2,6 +2,7 @@ import { useState, useRef, useEffect} from "react";
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from "@mui/material";
 
 //All this is still proof of concept, but just getting a basic idea going 
@@ -68,13 +69,22 @@ export const StickyWall = ()=>{
 
     setConfirm(false)
   }
-
+   
+  function handleDelete(){
+    setNotesTsx(() =>
+    notesTsx.filter((_:any, ind:number) => ind !== index)
+  )
+  }
 
    return (
      <div className="note" style={{width:"250px", height:"250px", backgroundColor: color}}>
-      <div className="note-title"> 
-          <textarea cols={24} maxLength={55} name="Title" value={newTitle} onChange={handleChangeTitle} placeholder="Title">
+      <div className="note-title" style={{display:"flex", gap:"5px", alignItems:"center"}}> 
+         
+          <textarea style={{marginTop:"5px"}} cols={20} maxLength={40} name="Title" value={newTitle} onChange={handleChangeTitle} placeholder="Title">
          </textarea>
+         <IconButton color="error" onClick={handleDelete}>
+          <DeleteIcon  fontSize="small" color="error"/>
+         </IconButton>
          </div>
          <div className="note-details"> 
           <textarea rows={8} cols={28} maxLength={33*8} name="Details" value={newDetails} onChange={handleChangeDetails} placeholder="Details">
